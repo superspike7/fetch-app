@@ -1,25 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react'
+import Form from './Form'
+import './App.css'
 
 function App() {
+  const [users, setUsers] = useState([])
+  const [hasError, setHasError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+  
+
+  const fetchUsers = () => {
+    fetch('https://jsonplaceholder.typicode.com/posts')
+      .then((response) => response.json())
+      .then((result) => {
+        setUsers(result)
+        setIsLoading(false)
+      })
+      .catch((error) => {
+        setHasError(true)
+        setIsLoading(false)
+        setErrorMessage(error.message)
+      })
+  }
+
+  useEffect(() => {
+    fetchUsers()
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <h1>Random Users</h1>
+      <Form userId={1} />
+      <br />
+      <br />
+      {hasError ? <p>{errorMessage}</p> : null}
+      {!isLoading ? (
+        <ul>
+          {users.map(({ id, title, body }) => (
+            <>
+              <li key={id}>
+                <p>Title: {title}</p>
+                <p>Body: {body}</p>
+              </li>
+              <hr />
+            </>
+          ))}
+        </ul>
+      ) : (
+        <h3>loading...</h3>
+      )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
