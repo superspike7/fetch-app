@@ -14,3 +14,9 @@ export const searchedItems = (data, keyword) => {
   });
   return filteredItems;
 };
+
+export const filterItems = (data, keyword, inStock) => {
+  if (keyword && inStock) return searchedItems(inStockItems(data), keyword);
+  if (keyword) return searchedItems(data, keyword);
+  if (inStock) return inStockItems(data);
+};

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import SearchBar from "./components/SearchBar";
 import ProductCategory from "./components/ProductCategory";
 import ProductRow from "./components/ProductRow";
-import { inStockItems, searchedItems } from "./helper/utils";
+import { filterItems } from "./helper/utils";
 
 const DATA_FROM_API = [
   {
@@ -69,13 +69,8 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (inStock && keyword) {
-      const itemsInStock = inStockItems(transformedData);
-      setItems(searchedItems(itemsInStock, keyword));
-    } else if (keyword) {
-      setItems(searchedItems(transformedData, keyword));
-    } else if (inStock) {
-      setItems(inStockItems(transformedData, keyword));
+    if (inStock || keyword) {
+      setItems(filterItems(transformedData, keyword, inStock));
     } else {
       setItems(transformedData);
     }
